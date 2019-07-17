@@ -14,10 +14,10 @@ export const getAccountById = (state: AppState, id: ID) =>
   getPopulatedAccounts(state).find(account => account.id === id)
 
 export const getDebitAccounts = (state: AppState) =>
-  getAccounts(state).filter(account => account.accountType === 'debit')
+  getAccounts(state).filter(account => account.type === 'debit')
 
 export const getCreditAccounts = (state: AppState) =>
-  getAccounts(state).filter(account => account.accountType === 'credit')
+  getAccounts(state).filter(account => account.type === 'credit')
 
 export const getTotalBalance = (state: AppState) => {
   const debitSum = getDebitAccounts(state).reduce(sum('balance'), 0)

@@ -37,7 +37,7 @@ const addTransactionToAccount = (
     [account]: {
       ...prevAccount,
       balance:
-        prevAccount.accountType === 'debit'
+        prevAccount.type === 'debit'
           ? Number(prevAccount.balance) - amount
           : Number(prevAccount.balance) + amount,
       transactions: [...prevAccount.transactions, id]
@@ -55,7 +55,7 @@ const deleteTransactionFromAccount = (
     [account]: {
       ...prevAccount,
       balance:
-        prevAccount.accountType === 'debit'
+        prevAccount.type === 'debit'
           ? Number(prevAccount.balance) + amount
           : Number(prevAccount.balance) - amount,
       transactions: prevAccount.transactions.filter(bid => bid !== id)

@@ -8,7 +8,9 @@ import {
   DeleteAccountAction
 } from './interfaces'
 
-export const addAccount = (account: IAccount): AddAccountAction => ({
+export const addAccount = (
+  account: Omit<IAccount, 'id' | 'transactions'>
+): AddAccountAction => ({
   type: types.ADD,
   payload: { id: uuid(), ...account, transactions: [], color: '#333333' }
 })

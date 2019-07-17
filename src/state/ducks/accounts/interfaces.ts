@@ -1,17 +1,17 @@
 import * as types from './types'
 import { ID } from '../interfaces'
 
-
 export type AccountState = Record<ID, IAccount>
 
 export interface IAccount {
   id: ID
-  accountType: 'credit' | 'debit'
+  type: 'credit' | 'debit'
   balance: number
   bank: string
   cardNumber: number
   cardType: 'visa' | 'mastercard' | 'amex'
   color?: string
+  limit?: number
   nickname?: string
   transactions: ID[]
 }
@@ -31,4 +31,7 @@ export type DeleteAccountAction = {
   payload: ID
 }
 
-export type AccountAction = AddAccountAction | EditAccountAction | DeleteAccountAction
+export type AccountAction =
+  | AddAccountAction
+  | EditAccountAction
+  | DeleteAccountAction
