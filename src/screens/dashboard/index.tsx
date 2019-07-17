@@ -15,12 +15,14 @@ import { ITransaction } from '../../state/ducks/transactions'
 interface DashboardProps {
   accounts: IAccount[]
   budget: IBudget[]
+  totalBalance: number
   transactions: ITransaction[]
 }
 
 const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
   accounts,
   budget,
+  totalBalance,
   transactions
 }) => {
   return (
@@ -34,6 +36,10 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
             <p>{account.balance}</p>
           </div>
         ))}
+        <section>
+          <h1>Total Balance</h1>
+          <p>{totalBalance}</p>
+        </section>
       </section>
       <section>
         <h1>Budget</h1>
@@ -61,5 +67,6 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
 export default connect((state: AppState) => ({
   accounts: accountSelectors.getAccounts(state),
   budget: budgetSelectors.getBudgets(state),
+  totalBalance: accountSelectors.getTotalBalance(state),
   transactions: transactionSelectors.getTransactions(state)
 }))(Dashboard)
