@@ -66,6 +66,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
         <Label>
           Limit
           <input
+            id="limit"
             type="number"
             value={limit}
             onChange={evt => setLimit(evt.target.value)}
@@ -76,6 +77,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       <Label>
         Account balance
         <input
+          id="balance"
           type="number"
           value={balance}
           onChange={evt => setBalance(evt.target.value)}
@@ -85,6 +87,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       <Label>
         Bank
         <input
+          id="bank"
           type="text"
           value={bank}
           onChange={evt => setBank(evt.target.value)}
@@ -94,6 +97,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       <Label>
         Card number
         <input
+          id="card-number"
           type="number"
           value={cardNumber}
           onChange={evt => setCardNumber(evt.target.value)}
@@ -136,12 +140,15 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       <Label>
         Nickname (optional)
         <input
+          id="nickname"
           type="text"
           value={nickname}
           onChange={evt => setNickname(evt.target.value)}
         />
       </Label>
-      <button type="submit">Add Account</button>
+      <button id="submit" type="submit">
+        Add account
+      </button>
     </form>
   )
 }
