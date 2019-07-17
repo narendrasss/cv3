@@ -4,5 +4,6 @@ import * as types from './types'
 import reducer from './reducers'
 
 export { actions, selectors, types }
+export * from './interfaces'
 
 export default reducer

@@ -1,7 +1,7 @@
 import * as types from './types'
 import uuid from 'uuid/v4'
+import { ID } from '../interfaces'
 import {
-  ID,
   IAccount,
   AddAccountAction,
   EditAccountAction,

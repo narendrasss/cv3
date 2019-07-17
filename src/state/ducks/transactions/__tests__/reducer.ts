@@ -1,18 +1,30 @@
 import _ from 'lodash'
-import reducer from './reducers'
-import { types as accountTypes } from '../accounts'
-import { types as budgetTypes } from '../budgets'
-import * as types from './types'
+import reducer from '../reducers'
+import { types as accountTypes, DeleteAccountAction } from '../../accounts'
+import { types as budgetTypes, DeleteBudgetAction } from '../../budgets'
+import * as types from '../types'
+import {
+  TransactionState,
+  AddTransactionAction,
+  DeleteTransactionAction,
+  EditTransactionAction
+} from '../interfaces'
+import { AppAction } from '../../interfaces'
+
+const initialState = {
+  byId: {},
+  allIds: []
+}
 
 describe('transactions reducer', () => {
-  const testState = {
+  const testState: TransactionState = {
     byId: {
       0: {
         id: 0,
         type: 'expense',
         vendor: 'tim hortons',
         amount: 2.09,
-        date: '2019-05-07',
+        date: new Date('2019-05-07'),
         account: 0,
         budget: 'food',
         note: 'Medium double double'
@@ -22,7 +34,7 @@ describe('transactions reducer', () => {
         type: 'expense',
         vendor: 'london drugs',
         amount: 7.83,
-        date: '2019-05-06',
+        date: new Date('2019-05-06'),
         account: 0,
         budget: 'groceries',
         note: 'Nestle coffee'
@@ -31,19 +43,19 @@ describe('transactions reducer', () => {
     allIds: [0, 1]
   }
 
-  it('returns empty object given no state', () => {
-    const state = reducer(null, {})
-    expect(_.isEmpty(state)).toBeTruthy()
+  it('returns initial state given no state', () => {
+    const state = reducer(undefined, {} as AppAction)
+    expect(state).toEqual(initialState)
   })
 
   it('adds new transaction', () => {
-    const action = {
+    const action: AddTransactionAction = {
       type: types.ADD,
       payload: {
         id: 2,
         vendor: 'chipotle',
-        amount: -11.03,
-        date: '2019-05-06',
+        amount: 11.03,
+        date: new Date('2019-05-06'),
         account: 0,
         budget: 'food'
       }
@@ -54,9 +66,18 @@ describe('transactions reducer', () => {
   })
 
   it('deletes a transaction', () => {
-    const action = {
+    const action: DeleteTransactionAction = {
       type: types.DELETE,
-      payload: 1
+      payload: {
+        id: 1,
+        type: 'expense',
+        vendor: 'london drugs',
+        amount: 7.83,
+        date: new Date('2019-05-06'),
+        account: 0,
+        budget: 'groceries',
+        note: 'Nestle coffee'
+      }
     }
     const state = reducer(testState, action)
     expect(state.byId[1]).toBeFalsy()
@@ -64,7 +85,7 @@ describe('transactions reducer', () => {
   })
 
   it('updates transaction values', () => {
-    const action = {
+    const action: EditTransactionAction = {
       type: types.EDIT,
       payload: {
         id: 1,
@@ -81,7 +102,7 @@ describe('transactions reducer', () => {
   })
 
   describe('budget delete', () => {
-    const action = {
+    const action: DeleteBudgetAction = {
       type: budgetTypes.DELETE,
       payload: 'food'
     }
@@ -98,15 +119,17 @@ describe('transactions reducer', () => {
   })
 
   describe('account delete', () => {
-    const action = {
+    const action: DeleteAccountAction = {
       type: accountTypes.DELETE,
       payload: 0
     }
     const state = reducer(testState, action)
 
     it('updates account of affected transactions to -1', () => {
-      const affected = _.filter(testState.byId, { account: action.payload })
-      const trs = _.filter(state, tr => affected.includes(tr.id))
+      const affected = _.filter(testState.byId, {
+        account: action.payload
+      }).map(tr => tr.id)
+      const trs = _.filter(state.byId, tr => affected.includes(tr.id))
       trs.map(tr => expect(tr.account).toEqual(-1))
     })
 

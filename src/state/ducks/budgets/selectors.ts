@@ -1,8 +1,10 @@
-export const getBudgets = ({ budgets }) => Object.values(budgets)
+import { AppState } from '../interfaces'
 
-export const getPopulatedBudgets = ({ budgets, transactions }) => {
-  return Object.values(budgets).map(budget => ({
+export const getBudgets = ({ budgets }: AppState) => Object.values(budgets)
+
+export const getPopulatedBudgets = (state: AppState) => {
+  return getBudgets(state).map(budget => ({
     ...budget,
-    transactions: budget.transactions.map(id => transactions.byId[id])
+    transactions: budget.transactions.map(id => state.transactions.byId[id])
   }))
 }

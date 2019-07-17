@@ -1,7 +1,17 @@
 import _ from 'lodash'
-import reducer from './reducers'
-import { types as transactionTypes } from '../transactions'
-import * as types from './types'
+import reducer from '../reducers'
+import {
+  types as transactionTypes,
+  AddTransactionAction,
+  DeleteTransactionAction
+} from '../../transactions'
+import * as types from '../types'
+import {
+  AddBudgetAction,
+  DeleteBudgetAction,
+  EditBudgetAction
+} from '../interfaces'
+import { AppAction } from '../../interfaces'
 
 describe('budgets reducer', () => {
   const testState = {
@@ -22,12 +32,12 @@ describe('budgets reducer', () => {
   }
 
   it('returns empty object given no state', () => {
-    const state = reducer(null, {})
+    const state = reducer(undefined, {} as AppAction)
     expect(_.isEmpty(state)).toBeTruthy()
   })
 
   it('adds new budget', () => {
-    const action = {
+    const action: AddBudgetAction = {
       type: types.ADD,
       payload: {
         name: 'gas',
@@ -43,7 +53,7 @@ describe('budgets reducer', () => {
   })
 
   it('deletes a budget', () => {
-    const action = {
+    const action: DeleteBudgetAction = {
       type: types.DELETE,
       payload: 'food'
     }
@@ -52,7 +62,7 @@ describe('budgets reducer', () => {
   })
 
   it('updates budget values', () => {
-    const action = {
+    const action: EditBudgetAction = {
       type: types.EDIT,
       payload: {
         name: 'food',
@@ -68,7 +78,7 @@ describe('budgets reducer', () => {
   })
 
   describe('add transaction', () => {
-    const action = {
+    const action: AddTransactionAction = {
       type: transactionTypes.ADD,
       payload: {
         id: 4,
@@ -76,7 +86,7 @@ describe('budgets reducer', () => {
         account: 0,
         vendor: 'mcd',
         amount: 12.99,
-        date: '2019-05-25',
+        date: new Date('2019-05-25'),
         type: 'expense'
       }
     }
@@ -93,15 +103,16 @@ describe('budgets reducer', () => {
     })
 
     it('ignores income transactions', () => {
-      const incomeAction = {
+      const incomeAction: AddTransactionAction = {
         type: transactionTypes.ADD,
         payload: {
           id: 5,
           account: 0,
-          for: 'interac',
+          vendor: 'interac',
           amount: 12.99,
-          date: '2019-05-25',
-          type: 'income'
+          date: new Date('2019-05-25'),
+          type: 'income',
+          budget: ''
         }
       }
       const state = reducer(testState, incomeAction)
@@ -110,13 +121,15 @@ describe('budgets reducer', () => {
   })
 
   describe('delete transaction', () => {
-    const action = {
+    const action: DeleteTransactionAction = {
       type: transactionTypes.DELETE,
       payload: {
         id: 2,
         budget: 'food',
         account: 0,
-        amount: 11.03
+        amount: 11.03,
+        vendor: 'tim hortons',
+        date: new Date('july 16 2019')
       }
     }
 

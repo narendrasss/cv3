@@ -1,22 +1,25 @@
-export const getAccounts = ({ accounts }) => Object.values(accounts)
+import { AppState, ID } from '../interfaces'
 
-export const getPopulatedAccounts = ({ accounts, transactions }) =>
-  getAccounts({ accounts }).map(account => ({
+const sum = (key: string) => (acc: number, obj: any) => acc + Number(obj[key])
+
+export const getAccounts = ({ accounts }: AppState) => Object.values(accounts)
+
+export const getPopulatedAccounts = (state: AppState) =>
+  getAccounts(state).map(account => ({
     ...account,
-    transactions: account.transactions.map(id => transactions.byId[id])
+    transactions: account.transactions.map(id => state.transactions.byId[id])
   }))
 
-export const getAccountById = (id, state) =>
+export const getAccountById = (state: AppState, id: ID) =>
   getPopulatedAccounts(state).find(account => account.id === id)
 
-export const getDebitAccounts = state =>
+export const getDebitAccounts = (state: AppState) =>
   getAccounts(state).filter(account => account.accountType === 'debit')
 
-export const getCreditAccounts = state =>
+export const getCreditAccounts = (state: AppState) =>
   getAccounts(state).filter(account => account.accountType === 'credit')
 
-export const getTotalBalance = state => {
-  const sum = key => (acc, obj) => acc + Number(obj[key])
+export const getTotalBalance = (state: AppState) => {
   const debitSum = getDebitAccounts(state).reduce(sum('balance'), 0)
   const creditSum = getCreditAccounts(state).reduce(sum('balance'), 0)
   return debitSum - creditSum

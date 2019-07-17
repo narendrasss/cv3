@@ -1,9 +1,10 @@
 import * as types from './types'
+import { IBudget } from './interfaces'
 
 let idx = 0
 const colors = ['#2B2D42', '#8D99AE', '#EDF2F4', '#EF233C', '#D90429']
 
-export const addBudget = budget => {
+export const addBudget = (budget: IBudget) => {
   const color = colors[idx]
   idx++
   return {
@@ -12,12 +13,12 @@ export const addBudget = budget => {
   }
 }
 
-export const deleteBudget = name => ({
+export const deleteBudget = (name: string) => ({
   type: types.DELETE,
   payload: name
 })
 
-export const editBudget = partial => ({
+export const editBudget = (partial: Partial<IBudget> & { name: string }) => ({
   type: types.EDIT,
   payload: { ...partial }
 })

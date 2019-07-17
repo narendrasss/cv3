@@ -1,6 +1,8 @@
 import { omit } from 'lodash'
 import * as types from './types'
-import { types as transactionTypes } from '../transactions'
+import { types as transactionTypes, AddTransactionAction, DeleteTransactionAction } from '../transactions'
+import { BudgetState } from './interfaces'
+import { AppAction } from '../interfaces'
 
 /*
 state shape:
@@ -15,9 +17,9 @@ state shape:
 }
 */
 
-const initialState = {}
+const initialState = {} as BudgetState
 
-const addTransactionToBudget = (state, action) => {
+const addTransactionToBudget = (state: BudgetState, action: AddTransactionAction) => {
   const { id, budget, amount, type } = action.payload
   if (type === 'income') return state
   const prevBudget = state[budget]
@@ -30,7 +32,7 @@ const addTransactionToBudget = (state, action) => {
     }
   }
 }
-const deleteTransactionFromBudget = (state, action) => {
+const deleteTransactionFromBudget = (state: BudgetState, action: DeleteTransactionAction) => {
   const { id, budget, amount, type } = action.payload
   if (type === 'income') return state
   const prevBudget = state[budget]
@@ -44,7 +46,7 @@ const deleteTransactionFromBudget = (state, action) => {
   }
 }
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: AppAction) => {
   switch (action.type) {
     case types.ADD:
       return {

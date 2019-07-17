@@ -1,4 +1,8 @@
-export type ID = string | number
+import * as types from './types'
+import { ID } from '../interfaces'
+
+
+export type AccountState = Record<ID, IAccount>
 
 export interface IAccount {
   id: ID
@@ -12,19 +16,19 @@ export interface IAccount {
   transactions: ID[]
 }
 
-export type AccountState = Record<ID, IAccount>
-
 export type AddAccountAction = {
-  type: 'accounts/ADD'
+  type: typeof types.ADD
   payload: IAccount
 }
 
 export type EditAccountAction = {
-  type: 'accounts/EDIT'
+  type: typeof types.EDIT
   payload: Partial<IAccount> & { id: ID }
 }
 
 export type DeleteAccountAction = {
-  type: 'accounts/DELETE'
+  type: typeof types.DELETE
   payload: ID
 }
+
+export type AccountAction = AddAccountAction | EditAccountAction | DeleteAccountAction

@@ -1,8 +1,9 @@
 import _ from 'lodash'
-import { compareDesc } from 'date-fns'
 import * as types from './types'
-import { types as accountTypes } from '../accounts'
-import { types as budgetTypes } from '../budgets'
+import { types as accountTypes, DeleteAccountAction } from '../accounts'
+import { types as budgetTypes, DeleteBudgetAction } from '../budgets'
+import { TransactionState } from './interfaces'
+import { AppAction } from '../interfaces'
 
 /*
 state shape:
@@ -26,9 +27,9 @@ state shape:
 const initialState = {
   byId: {},
   allIds: []
-}
+} as TransactionState
 
-const resetTransactionCategory = (state, action) => {
+const resetTransactionCategory = (state: TransactionState, action: DeleteBudgetAction) => {
   const budgetName = action.payload
   return {
     ...state,
@@ -41,7 +42,7 @@ const resetTransactionCategory = (state, action) => {
   }
 }
 
-const removeAccountFromTransactions = (state, action) => {
+const removeAccountFromTransactions = (state: TransactionState, action: DeleteAccountAction) => {
   const accountId = action.payload
   return {
     ...state,
@@ -54,7 +55,7 @@ const removeAccountFromTransactions = (state, action) => {
   }
 }
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: AppAction): TransactionState => {
   switch (action.type) {
     case types.ADD:
       return {
@@ -65,7 +66,7 @@ const reducer = (state = initialState, action) => {
             ...action.payload
           }
         },
-        allIds: [...state.allIds, action.payload.id].sort(compareDesc)
+        allIds: [...state.allIds, action.payload.id]
       }
     case types.EDIT: {
       const { id } = action.payload
@@ -78,20 +79,20 @@ const reducer = (state = initialState, action) => {
             ...action.payload
           }
         },
-        allIds: state.allIds.sort(compareDesc)
+        allIds: state.allIds
       }
     }
-    case types.DELETE:
+    case types.DELETE: {
+      const { id: toDelete } = action.payload
+      const byId = { ...state.byId }
+      delete byId[toDelete]
       return {
         ...state,
-        byId: {
-          ...state.byId,
-          [action.payload]: undefined
-        },
+        byId,
         allIds: state.allIds
-          .filter(id => id !== action.payload)
-          .sort(compareDesc)
+          .filter(id => id !== toDelete)
       }
+    }
     case budgetTypes.DELETE:
       return resetTransactionCategory(state, action)
     case accountTypes.DELETE:
