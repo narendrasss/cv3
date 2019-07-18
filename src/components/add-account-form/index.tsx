@@ -39,9 +39,10 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
     })
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} data-cy="add-account-form">
       <label>
         <input
+          data-cy="account_type_credit"
           type="radio"
           name="type"
           value="credit"
@@ -53,6 +54,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       </label>
       <label>
         <input
+          data-cy="account_type_debit"
           type="radio"
           name="type"
           value="debit"
@@ -66,6 +68,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
         <Label>
           Limit
           <input
+            data-cy="account_limit"
             id="limit"
             type="number"
             value={limit}
@@ -77,6 +80,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       <Label>
         Account balance
         <input
+          data-cy="account_balance"
           id="balance"
           type="number"
           value={balance}
@@ -87,6 +91,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       <Label>
         Bank
         <input
+          data-cy="account_bank"
           id="bank"
           type="text"
           value={bank}
@@ -97,6 +102,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       <Label>
         Card number
         <input
+          data-cy="account_card-number"
           id="card-number"
           type="number"
           value={cardNumber}
@@ -106,6 +112,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       </Label>
       <label>
         <input
+          data-cy="account_card-type_visa"
           type="radio"
           name="card-type"
           value="visa"
@@ -117,6 +124,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       </label>
       <label>
         <input
+          data-cy="account_card-type_mastercard"
           type="radio"
           name="card-type"
           value="mastercard"
@@ -128,6 +136,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       </label>
       <label>
         <input
+          data-cy="account_card-type_amex"
           type="radio"
           name="card-type"
           value="amex"
@@ -140,13 +149,14 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       <Label>
         Nickname (optional)
         <input
+          data-cy="account_nickname"
           id="nickname"
           type="text"
           value={nickname}
           onChange={evt => setNickname(evt.target.value)}
         />
       </Label>
-      <button id="submit" type="submit">
+      <button id="submit" type="submit" data-cy="add-account-form_submit">
         Add account
       </button>
     </form>

@@ -13,6 +13,7 @@ import { IBudget } from 'state/ducks/budgets'
 import { ITransaction } from 'state/ducks/transactions'
 
 import AddAccountForm from 'components/add-account-form'
+import AddTransactionForm from 'components/add-transaction-form'
 
 interface DashboardStateProps {
   accounts: IAccount[]
@@ -35,6 +36,7 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
   addAccount
 }) => {
   const [showAccountForm, setShowAccountForm] = useState(false)
+  const [showTransactionForm, setShowTransactionForm] = useState(false)
 
   return (
     <main>
@@ -78,6 +80,16 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
           </div>
         ))}
       </section>
+      <button
+        type="button"
+        onClick={() => setShowTransactionForm(prev => !prev)}
+      >
+        {showTransactionForm ? 'Close' : 'Add transaction'}
+      </button>
+      <AddTransactionForm
+        isOpen={showTransactionForm}
+        onSubmit={(_, transaction) => transaction}
+      />
     </main>
   )
 }
