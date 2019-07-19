@@ -6,7 +6,7 @@ import { ITransaction } from './interfaces'
 import { AppState, ID } from '../interfaces'
 import { getTransactionById } from './selectors'
 
-export const addTransaction = (transaction: ITransaction) => ({
+export const addTransaction = (transaction: Omit<ITransaction, 'id'>) => ({
   type: types.ADD,
   payload: { id: uuid(), ...transaction }
 })

@@ -10,30 +10,36 @@ import {
 import { AppState } from 'state/ducks/interfaces'
 import { IAccount, actions as accountActions } from 'state/ducks/accounts'
 import { IBudget } from 'state/ducks/budgets'
-import { ITransaction } from 'state/ducks/transactions'
+import {
+  ITransaction,
+  actions as transactionActions
+} from 'state/ducks/transactions'
 
 import AddAccountForm from 'components/add-account-form'
 import AddTransactionForm from 'components/add-transaction-form'
+import { format } from 'date-fns'
 
 interface DashboardStateProps {
   accounts: IAccount[]
-  budget: IBudget[]
+  budgets: IBudget[]
   totalBalance: number
   transactions: ITransaction[]
 }
 
 interface DashboardActionProps {
   addAccount: typeof accountActions.addAccount
+  addTransaction: typeof transactionActions.addTransaction
 }
 
 type DashboardProps = DashboardStateProps & DashboardActionProps
 
 const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
   accounts,
-  budget,
+  budgets,
   totalBalance,
   transactions,
-  addAccount
+  addAccount,
+  addTransaction
 }) => {
   const [showAccountForm, setShowAccountForm] = useState(false)
   const [showTransactionForm, setShowTransactionForm] = useState(false)
@@ -63,10 +69,10 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
       </section>
       <section>
         <h1>Budget</h1>
-        {budget.map(bdg => (
-          <div key={bdg.name}>
-            <h1>{bdg.name}</h1>
-            <p>{bdg.spent}</p>
+        {budgets.map(budget => (
+          <div key={budget.name}>
+            <h1>{budget.name}</h1>
+            <p>{budget.spent}</p>
           </div>
         ))}
       </section>
@@ -76,7 +82,7 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
           <div key={tr.id}>
             <p>{tr.amount}</p>
             <p>{tr.vendor}</p>
-            <p>{tr.date}</p>
+            <p>{format(tr.date, 'YYYY-MM-DD')}</p>
           </div>
         ))}
       </section>
@@ -87,8 +93,13 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
         {showTransactionForm ? 'Close' : 'Add transaction'}
       </button>
       <AddTransactionForm
+        accounts={accounts.map(account => account.id)}
+        budgets={budgets.map(budget => budget.name)}
         isOpen={showTransactionForm}
-        onSubmit={(_, transaction) => transaction}
+        onSubmit={transaction => {
+          addTransaction(transaction)
+          setShowTransactionForm(false)
+        }}
       />
     </main>
   )
@@ -96,13 +107,14 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
 
 const mapStateToProps = (state: AppState): DashboardStateProps => ({
   accounts: accountSelectors.getAccounts(state),
-  budget: budgetSelectors.getBudgets(state),
+  budgets: budgetSelectors.getBudgets(state),
   totalBalance: accountSelectors.getTotalBalance(state),
   transactions: transactionSelectors.getTransactions(state)
 })
 
 const mapDispatchToProps: DashboardActionProps = {
-  addAccount: accountActions.addAccount
+  addAccount: accountActions.addAccount,
+  addTransaction: transactionActions.addTransaction
 }
 
 export default connect(
