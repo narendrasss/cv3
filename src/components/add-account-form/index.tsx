@@ -5,10 +5,7 @@ import { IAccount } from 'state/ducks/accounts'
 
 interface AddAccountFormProps {
   isOpen: boolean
-  onSubmit: (
-    evt: React.FormEvent,
-    account: Omit<IAccount, 'id' | 'transactions'>
-  ) => any
+  onSubmit: (account: Omit<IAccount, 'id' | 'transactions'>) => any
 }
 
 const AddAccountForm: React.FC<AddAccountFormProps> = ({
@@ -27,8 +24,9 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
 
   if (!isOpen) return null
 
-  const handleSubmit: React.FormEventHandler = evt =>
-    onSubmit(evt, {
+  const handleSubmit: React.FormEventHandler = evt => {
+    evt.preventDefault()
+    onSubmit({
       type,
       bank,
       cardType,
@@ -37,6 +35,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({
       cardNumber: Number(cardNumber),
       limit: Number(limit)
     })
+  }
 
   return (
     <form onSubmit={handleSubmit} data-cy="add-account-form">

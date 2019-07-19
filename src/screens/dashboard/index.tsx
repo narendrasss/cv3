@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { RouteComponentProps } from '@reach/router'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { format } from 'date-fns'
 
 import {
   accountSelectors,
@@ -18,7 +19,6 @@ import {
 
 import AddAccountForm from 'components/add-account-form'
 import AddTransactionForm from 'components/add-transaction-form'
-import { format } from 'date-fns'
 
 interface DashboardStateProps {
   accounts: IAccount[]
@@ -63,7 +63,7 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
         </button>
         <AddAccountForm
           isOpen={showAccountForm}
-          onSubmit={(_, acct) => addAccount(acct)}
+          onSubmit={account => addAccount(account)}
         />
         <section>
           <h1>Total Balance</h1>
@@ -76,22 +76,21 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
           {budgets.map(budget => (
             <div key={budget.name}>
               <h1>{budget.name}</h1>
-              <p>{budget.spent}</p>
+              <p>Budget: {budget.budget}</p>
+              <p>Spent: {budget.spent}</p>
             </div>
           ))}
         </Flex>
       </section>
       <section>
         <h1>Transactions</h1>
-        <Flex>
-          {transactions.map(tr => (
-            <Flex key={tr.id}>
-              <p>{tr.amount}</p>
-              <p>{tr.vendor}</p>
-              <p>{format(tr.date, 'YYYY-MM-DD')}</p>
-            </Flex>
-          ))}
-        </Flex>
+        {transactions.map(tr => (
+          <Transaction key={tr.id}>
+            <p>{tr.amount}</p>
+            <p>{tr.vendor}</p>
+            <p>{format(tr.date, 'YYYY-MM-DD')}</p>
+          </Transaction>
+        ))}
       </section>
       <button
         type="button"
@@ -140,4 +139,11 @@ const Flex = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+`
+
+const Transaction = styled(Flex)`
+  justify-content: flex-start;
+  > * {
+    margin-right: 1em;
+  }
 `
