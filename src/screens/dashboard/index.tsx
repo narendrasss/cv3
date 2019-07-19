@@ -11,7 +11,7 @@ import {
 } from 'state/ducks'
 import { AppState } from 'state/ducks/interfaces'
 import { IAccount, actions as accountActions } from 'state/ducks/accounts'
-import { IBudget } from 'state/ducks/budgets'
+import { IBudget, actions as budgetActions } from 'state/ducks/budgets'
 import {
   ITransaction,
   actions as transactionActions
@@ -19,6 +19,7 @@ import {
 
 import AddAccountForm from 'components/add-account-form'
 import AddTransactionForm from 'components/add-transaction-form'
+import AddBudgetForm from 'components/add-budget-form'
 
 interface DashboardStateProps {
   accounts: IAccount[]
@@ -30,6 +31,7 @@ interface DashboardStateProps {
 interface DashboardActionProps {
   addAccount: typeof accountActions.addAccount
   addTransaction: typeof transactionActions.addTransaction
+  addBudget: typeof budgetActions.addBudget
 }
 
 type DashboardProps = DashboardStateProps & DashboardActionProps
@@ -40,10 +42,12 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
   totalBalance,
   transactions,
   addAccount,
-  addTransaction
+  addTransaction,
+  addBudget
 }) => {
   const [showAccountForm, setShowAccountForm] = useState(false)
   const [showTransactionForm, setShowTransactionForm] = useState(false)
+  const [showBudgetForm, setShowBudgetForm] = useState(false)
 
   return (
     <Main>
@@ -82,6 +86,16 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
           ))}
         </Flex>
       </section>
+      <button type="button" onClick={() => setShowBudgetForm(prev => !prev)}>
+        {showBudgetForm ? 'Close' : 'Add budget'}
+      </button>
+      <AddBudgetForm
+        isOpen={showBudgetForm}
+        onSubmit={budget => {
+          addBudget(budget)
+          setShowBudgetForm(false)
+        }}
+      />
       <section>
         <h1>Transactions</h1>
         {transactions.map(tr => (
@@ -120,7 +134,8 @@ const mapStateToProps = (state: AppState): DashboardStateProps => ({
 
 const mapDispatchToProps: DashboardActionProps = {
   addAccount: accountActions.addAccount,
-  addTransaction: transactionActions.addTransaction
+  addTransaction: transactionActions.addTransaction,
+  addBudget: budgetActions.addBudget
 }
 
 export default connect(
