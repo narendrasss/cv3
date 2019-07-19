@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { RouteComponentProps } from '@reach/router'
 import { connect } from 'react-redux'
+import styled from 'styled-components'
 
 import {
   accountSelectors,
@@ -45,16 +46,18 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
   const [showTransactionForm, setShowTransactionForm] = useState(false)
 
   return (
-    <main>
+    <Main>
       <h1>Dashboard</h1>
       <section>
         <h1>Accounts</h1>
-        {accounts.map(account => (
-          <div key={account.id}>
-            <h1>{account.bank}</h1>
-            <p>{account.balance}</p>
-          </div>
-        ))}
+        <Flex>
+          {accounts.map(account => (
+            <div key={account.id}>
+              <h1>{account.bank}</h1>
+              <p>{account.balance}</p>
+            </div>
+          ))}
+        </Flex>
         <button type="button" onClick={() => setShowAccountForm(prev => !prev)}>
           {showAccountForm ? 'Close' : 'Add account'}
         </button>
@@ -69,22 +72,26 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
       </section>
       <section>
         <h1>Budget</h1>
-        {budgets.map(budget => (
-          <div key={budget.name}>
-            <h1>{budget.name}</h1>
-            <p>{budget.spent}</p>
-          </div>
-        ))}
+        <Flex>
+          {budgets.map(budget => (
+            <div key={budget.name}>
+              <h1>{budget.name}</h1>
+              <p>{budget.spent}</p>
+            </div>
+          ))}
+        </Flex>
       </section>
       <section>
         <h1>Transactions</h1>
-        {transactions.map(tr => (
-          <div key={tr.id}>
-            <p>{tr.amount}</p>
-            <p>{tr.vendor}</p>
-            <p>{format(tr.date, 'YYYY-MM-DD')}</p>
-          </div>
-        ))}
+        <Flex>
+          {transactions.map(tr => (
+            <Flex key={tr.id}>
+              <p>{tr.amount}</p>
+              <p>{tr.vendor}</p>
+              <p>{format(tr.date, 'YYYY-MM-DD')}</p>
+            </Flex>
+          ))}
+        </Flex>
       </section>
       <button
         type="button"
@@ -101,7 +108,7 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
           setShowTransactionForm(false)
         }}
       />
-    </main>
+    </Main>
   )
 }
 
@@ -121,3 +128,16 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Dashboard)
+
+const Main = styled.main`
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: 10vh auto;
+`
+
+const Flex = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`
