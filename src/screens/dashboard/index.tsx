@@ -20,6 +20,7 @@ import {
 import AddAccountForm from 'components/add-account-form'
 import AddTransactionForm from 'components/add-transaction-form'
 import AddBudgetForm from 'components/add-budget-form'
+import Transaction from 'components/transaction'
 
 interface DashboardStateProps {
   accounts: IAccount[]
@@ -67,7 +68,10 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
         </button>
         <AddAccountForm
           isOpen={showAccountForm}
-          onSubmit={account => addAccount(account)}
+          onSubmit={account => {
+            addAccount(account)
+            setShowAccountForm(false)
+          }}
         />
         <section>
           <h1>Total Balance</h1>
@@ -99,11 +103,7 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
       <section>
         <h1>Transactions</h1>
         {transactions.map(tr => (
-          <Transaction key={tr.id}>
-            <p>{tr.amount}</p>
-            <p>{tr.vendor}</p>
-            <p>{format(tr.date, 'YYYY-MM-DD')}</p>
-          </Transaction>
+          <Transaction key={tr.id} {...tr} />
         ))}
       </section>
       <button
@@ -113,8 +113,6 @@ const Dashboard: React.FC<RouteComponentProps & DashboardProps> = ({
         {showTransactionForm ? 'Close' : 'Add transaction'}
       </button>
       <AddTransactionForm
-        accounts={accounts.map(account => account.id)}
-        budgets={budgets.map(budget => budget.name)}
         isOpen={showTransactionForm}
         onSubmit={transaction => {
           addTransaction(transaction)
@@ -154,11 +152,4 @@ const Flex = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-`
-
-const Transaction = styled(Flex)`
-  justify-content: flex-start;
-  > * {
-    margin-right: 1em;
-  }
 `

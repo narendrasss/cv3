@@ -1,37 +1,49 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { format } from 'date-fns'
 
 import { ID } from 'state/ducks/interfaces'
 import { ITransaction } from 'state/ducks/transactions'
 import useForm from 'hooks/useForm'
+import { getAccounts } from 'state/ducks/accounts/selectors'
+import { getBudgets } from 'state/ducks/budgets/selectors'
 
-interface AddTransactionFormProps {
-  accounts: ID[]
-  budgets: string[]
-  isOpen: boolean
-  onSubmit: (transaction: Omit<ITransaction, 'id'>) => any
+type TransactionFormOutput = Omit<ITransaction, 'id'>
+
+type TransactionFormInputs = Omit<TransactionFormOutput, 'date' | 'amount'> & {
+  date: string
+  amount: string
 }
 
-const transformInput = (input: any): Omit<ITransaction, 'id'> => ({
+interface AddTransactionFormProps {
+  isOpen: boolean
+  onSubmit: (transaction: TransactionFormOutput) => any
+  initialValues?: TransactionFormInputs
+}
+
+const transformInput = (
+  input: TransactionFormInputs
+): TransactionFormOutput => ({
   ...input,
   date: new Date(input.date),
   amount: Number(input.amount)
 })
 
 const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
-  accounts,
-  budgets,
   isOpen,
   onSubmit
 }) => {
-  const initialInputs = {
+  const accounts = useSelector(getAccounts)
+  const budgets = useSelector(getBudgets)
+
+  const initialInputs: TransactionFormInputs = {
     type: 'expense' as 'expense' | 'income',
     vendor: '',
     amount: '',
     date: format(new Date(), 'YYYY-MM-DD'),
-    account: accounts[0],
-    budget: budgets[0],
+    account: accounts[0].id,
+    budget: budgets[0].name,
     note: ''
   }
 
@@ -107,9 +119,11 @@ const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         onChange={handleChange}
         data-cy="transaction_account"
       >
-        {accounts.map(id => (
+        {accounts.map(({ id, bank, cardNumber }) => (
           <option key={id} value={id}>
-            {id}
+            {bank}
+            {` `}
+            {cardNumber}
           </option>
         ))}
       </select>
@@ -121,9 +135,9 @@ const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
         onChange={handleChange}
         data-cy="transaction_budget"
       >
-        {budgets.map(id => (
-          <option key={id} value={id}>
-            {id}
+        {budgets.map(({ name }) => (
+          <option key={name} value={name}>
+            {name}
           </option>
         ))}
       </select>
